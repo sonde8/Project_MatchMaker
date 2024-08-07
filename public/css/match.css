@@ -1,0 +1,318 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body{
+    font-family: 'Pretendard-Regular' ;
+    font-size: 16px;
+    height: 100vh;
+    margin: 0;
+    padding: 0 50px;
+    background: url(../img/1234567.jpg) no-repeat center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #252547;
+    }
+
+
+
+#navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    height: 70px;
+    padding-top: 8px;
+}
+
+.user_logo{
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-weight: 900;
+}
+
+.logout_logo{
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    color: white;
+}
+
+/* 배너 */
+#banner {
+    position: relative;
+    width: 100%; /* Full width to fit the container */
+    height: 300px; /* Adjust the height as needed */
+    overflow: hidden;
+    margin: 20px 0; /* Space around the banner */
+}
+
+.banner-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size : cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.banner-image.active {
+    opacity: 1;
+}
+
+
+/* 방만들기 버튼 */
+.room_make {
+    position: relative;
+    display: inline-block;
+    font-size: 2em;
+    letter-spacing: .2em;
+    color: whitesmoke;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 2px solid #0ef;
+    border-radius: 10px;
+    margin-top: 3%;
+    margin-left: 77.5%;
+    z-index: 1;
+    overflow: hidden;
+    transition: color 1s, box-shadow 1s;
+    padding: 0.5em 1em;
+}
+.room_make:hover {
+    transition-delay: 0s, 0.05s;
+    color: #fff;
+    box-shadow:
+        0 0 10px #0ef,
+        0 0 20px #0ef,
+        0 0 40px #0ef,
+        0 0 80px #0ef,
+        0 0 160px #0ef;
+}
+.room_make::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50px;
+    width: 0;
+    height: 100%;
+    background: #0ef;
+    transform: skewX(35deg);
+    z-index: -1;
+    transition: 1s;
+}
+.room_make:hover:before {
+    width: 100%;
+}
+
+/* 경기 조건 선택 select css */
+.match_info {
+    text-align: center;
+    font-size: 16px;
+    color: gray;
+}
+
+.clickable_row:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+/* 요소들을 가로로 배치하는 CSS */
+.match_options {
+    display: flex;
+    justify-content: center;
+    /* 요소 간의 간격 */
+}
+
+
+/* select css */
+select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+
+    font-family: "Pretendard-Regular", sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.5;
+
+    color: black;
+    background-color: white;
+    
+    padding: 0.5em 1.4em 0.4em 0.8em; /* 높이와 패딩 조절 */
+    margin: 0 5px;
+
+    border: 1px solid #0ef;
+    border-radius: 0.5em;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    
+    text-align: center; /* 글자 가운데 정렬 */
+    font-weight: 500;
+    height: 35px; /* 높이 설정 */
+    width: 100px;
+    
+}
+
+select:hover {
+    border-color: #888;
+} 
+
+select:focus {
+    border-color: #aaa;
+    box-shadow: 0 0 1px 3px rgba(59, 153, 252, 0.7);
+    box-shadow: 0 0 0 3px -moz-mac-focusring;
+    color: #222;
+    outline: none;
+}
+
+select:disabled {
+    opacity: 0.5;
+}
+
+.menu_bar{
+    display: flex;
+    justify-content: space-around;
+}
+
+.main_logo{
+    width: 200px;
+    height: 100px;
+}
+
+#map{
+    width: 50%;
+    height: 400px;
+    display: flex;
+    justify-items: center;
+}
+
+
+select {
+    height: 40px;
+    font-size: 15px;
+    align-items: center;
+    padding: 5px;
+}
+
+.match_info {
+    text-align: center;
+    font-size: 18px;
+    color: black;
+    margin-bottom: 10px;
+}
+
+
+
+.table{
+    margin: auto;
+    padding-top: 2%;
+    width: 90%; 
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px; /* 원하는 radius 값으로 조정 */
+    overflow: hidden; /* 내부 요소가 radius를 넘어가지 않도록 */
+}
+
+
+.table th{
+    text-align: center;
+    border: 0.2px solid rgb(3, 19, 45);
+    padding: 0.5px;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.table td{
+    text-align: center;
+    border: 0.2px solid rgb(3, 19, 45);
+    padding: 0.5px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+    max-width: 600px; /* 셀의 최대 너비를 설정 (필요에 따라 조정) */
+}
+
+.match-list{
+    height: 40px;
+    background-color: #0ef;
+}
+
+.clickable_row{
+    height: 40px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.table tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.table tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+/* 마지막 행의 첫 번째와 마지막 셀에 radius 적용 */
+.table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+
+/* 퍼네이션 */
+div#nav-below.paging-navigation {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    text-align: center; 
+}
+
+div#nav-below.paging-navigation .page-numbers {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    background-color: transparent;
+    color: lightgray;
+}
+
+div#nav-below.paging-navigation span.page-numbers.current {
+    background-color: #0ef;
+    color: #FFF;
+}
+
+div#nav-below.paging-navigation a.page-numbers {
+    border: 1px solid #E0E0E0;
+}
+
+div#nav-below.paging-navigation a.page-numbers:hover,
+div#nav-below.paging-navigation a.page-numbers:focus {
+    background-color: #F5F5F5;
+    color: #333;
+}
+
+.separate-containers .paging-navigation {
+    padding: 25px 0;
+    text-align: center;
+    background-color: #FAFAFA;
+}
+
+div#nav-below.paging-navigation .gp-icon {
+    vertical-align: middle;
+}

@@ -1,0 +1,333 @@
+{% block content %}
+
+
+<link rel="stylesheet" href="/css/match_room.css">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<nav id="navbar">
+    <a href="/user/match"><img src="/img/logo1.png" alt="" class="main_logo"></a>
+    <div class="user_info">
+        <a href="/user/myPage">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>
+</nav>
+
+<div>
+    <div class="content-container">
+        <div class="matchfield-container">
+            <img src="/img/matchfield.png" alt="" class="matchfield">
+            {% set positions = ['st', 'lm', 'lcm', 'rcm', 'rm', 'lb', 'lcb', 'rcb', 'rb', 'gk'] %}
+            {% for position in positions %}
+            <div class="overlay-image {{ position }}">
+                {% if balanceMatched %}
+                {% if loop.index0 < teamA|length %} <img src="/img/player3.png" alt=""> <!-- A팀 이미지 경로 -->
+                    <div class="player-info">
+                        <span>{{ teamA[loop.index0].user_id }}</span>
+                        <br>
+                        <span>{{ teamA[loop.index0].user_rate }}</span>
+                        <br>
+                        <span>{{ teamA[loop.index0].user_rank }}</span>
+                    </div>
+                    {% else %}
+                    {% set indexB = loop.index0 - teamA|length %}
+                    {% if indexB < teamB|length %} <img src="/img/gold8.png" alt=""> <!-- B팀 이미지 경로 -->
+                        <div class="player-info">
+                            <span>{{ teamB[indexB].user_id }}</span>
+                            <br>
+                            <span>{{ teamB[indexB].user_rate }}</span>
+                            <br>
+                            <span>{{ teamB[indexB].user_rank }}</span>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        {% else %}
+                        {% if position in ['st', 'lm', 'lcm', 'rcm', 'rm'] %}
+                        <img src="/img/player3.png" alt=""> <!-- 새로운 이미지 경로 -->
+                        {% else %}
+                        <img src="/img/gold8.png" alt="">
+                        {% endif %}
+                        {% if loop.index0 < join_users|length %} <div class="player-info">
+                            <div class="profile_wrapper" id="profileImagesContainer">
+                                <img id="profileImage" src="{{ user_photo[join_users[loop.index0]] }}" 
+                                alt="Profile Image" class="profile_image circle"
+                                onerror="this.onerror=null;this.src='/img/ball.png';">
+                            </div>
+                            <span>{{ user_nick[join_users[loop.index0]] }} {{ user_rate[join_users[loop.index0]] }}</span>
+                            <span>{{ user_rank[join_users[loop.index0]] }}</span>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div class="info-container">
+        <pre>매치 정보</pre>
+        <pre>{{ match.match_info }}</pre>
+        <p>지역: {{ match.match_region }}</p>
+        <p>예상 경기 날짜: {{ match.match_date }}</p>
+        <p>예상 시작 시간: {{ match.match_st_dt }}</p>
+        <p>예상 종료 시간: {{ match.match_ed_dt }}</p>
+        <p>여성부 매치: {{ match.female_match_yn }}</p>
+        <p>점수 매치: {{ match.rate_match_yn }}</p>
+
+
+        <div class="button-container">
+            {% if idName != teamLeader %}
+            <form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
+                <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+                <input type="submit" class="btn" value="경기참가" data-user-count="{{ join_users|length }}">
+            </form>
+            {% endif %}
+
+            <form action="/user/cancel_game" method="post">
+                <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+                <input type="submit" class="btn" value="경기탈퇴">
+            </form>
+
+            {% if join_users.length == 10 %}
+            <form action="/bal/tmmatch" method="post">
+                <input type="hidden" name="match_title" value="{{ match.match_title }}">
+                <input type="hidden" name="match_region" value="{{ match.match_region }}">
+                <input type="hidden" name="match_date" value="{{ match.match_date }}">
+                <input type="hidden" name="match_st_dt" value="{{ match.match_st_dt }}">
+                <input type="hidden" name="match_ed_dt" value="{{ match.match_ed_dt }}">
+                <input type="hidden" name="female_match_yn" value="{{ match.female_match_yn }}">
+                <input type="hidden" name="rate_match_yn" value="{{ match.rate_match_yn }}">
+                <input type="hidden" name="match_info" value="{{ match.match_info }}">
+                <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+                {% for join_user in join_users %}
+                <input type="hidden" name="user_id" value="{{ join_user }}">
+                <input type="hidden" name="user_rate" value="{{ user_info[join_user] }}">
+                {% endfor %}
+                <input type="hidden" name="idName" value="{{ idName }}"> <!-- idName 값 유지 -->
+                <input type="hidden" name="balanceMatched" value="true"> <!-- 밸런스 매칭 상태 -->
+                <input type="submit" class="btn" value="밸런스 매칭"><br>
+            </form>
+            {% endif %}
+        </div>
+        <div>
+            {% if teamA and teamA|length > 0 %}
+            팀A (Average rate: {{ avgTeamA }})<br>
+            {% for member in teamA %}
+            <div style="border: 1px solid purple;">
+                [{{ member.user_id }}, {{ member.user_rate }}]<br>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <br>
+            {% if teamB and teamB|length > 0 %}
+            팀B (Average rate: {{ avgTeamB }})<br>
+            {% for member in teamB %}
+            <div style="border: 1px solid orange;">
+                [{{ member.user_id }}, {{ member.user_rate }}]<br>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if balanceMatched %}
+            <br>
+            <form action="/user/team" method="post">
+                <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+                <input type="hidden" name="teamA_user1" value="{{ teamA[0].user_id }}">
+                <input type="hidden" name="teamA_user2" value="{{ teamA[1].user_id }}">
+                <input type="hidden" name="teamA_user3" value="{{ teamA[2].user_id }}">
+                <input type="hidden" name="teamA_user4" value="{{ teamA[3].user_id }}">
+                <input type="hidden" name="teamA_user5" value="{{ teamA[4].user_id }}">
+                <input type="hidden" name="teamB_user1" value="{{ teamB[0].user_id }}">
+                <input type="hidden" name="teamB_user2" value="{{ teamB[1].user_id }}">
+                <input type="hidden" name="teamB_user3" value="{{ teamB[2].user_id }}">
+                <input type="hidden" name="teamB_user4" value="{{ teamB[3].user_id }}">
+                <input type="hidden" name="teamB_user5" value="{{ teamB[4].user_id }}">
+
+                <input type="submit" class="btn" value="팀확정">
+            </form>
+
+            <form action="/reserv/reservAll" method="get">
+                <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+                <a href="/reserv/reservAll"><input type="submit" class="btn" value="예약하기"></a>
+            </form>
+            {% endif %}
+            <!-- <div class="chatt">
+                <input id="input" autocomplete="off" placeholder="채팅을 입력해주세요" />
+                <input id="chatBtn" type="button" class="btn" value="전송" onclick="sendMessage()">
+                <ul id="messages" style="list-style: none;"></ul>
+                <span id="userNick" style="display: none;">{{ nick }}</span>
+            </div> -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>💬채팅방</h3>
+                </div>
+                <div class="chat-messages">
+                    <ul id="messages"></ul>
+                </div>
+                <div class="chat-input">
+                    <input id="input" type="text" autocomplete="off" placeholder="채팅을 입력해주세요" />
+                    <button id="chatBtn" class="btn" onclick="sendMessage()">전송</button>
+                </div>
+                <span id="userNick" style="display: none;">{{ nick }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- 스크립트 -->
+
+<script>
+    const matchIdxElement = document.getElementsByName("match_idx")[0];
+    const matchIdxValue = matchIdxElement ? matchIdxElement.value : null;
+    console.log('Match Index:', matchIdxValue);
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString();
+
+
+
+    function sendMessage() {
+        const userNickElement = document.getElementById('userNick');
+        const userNick = userNickElement.textContent;
+        const input = document.getElementById('input');
+
+        if (input.value) {
+            if (ws.readyState === WebSocket.OPEN) {
+                const now = new Date();
+                const timestamp = now.toLocaleTimeString();
+
+                const message = {
+                    nick: userNick,
+                    message: input.value,
+                    timestamp: timestamp
+                };
+
+                ws.send(JSON.stringify(message));
+
+                // 서버에 채팅 메시지 저장 요청
+                fetch(`/match_room/${encodeURIComponent(matchIdxValue)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        timestamp: timestamp,
+                        message: input.value,
+                        match_idx: matchIdxValue
+                    })
+                })
+                    .then(response => response.text())
+                    .then(result => {
+                        console.log('Message saved:', result);
+                        input.value = '';
+                    })
+                    .catch(error => console.error('Error saving message:', error));
+            } else {
+                console.error('WebSocket is not open. ReadyState:', ws.readyState);
+            }
+        }
+    }
+
+
+
+
+
+    let ws;
+
+    function connect() {
+        const wsUrl = `ws://localhost:3007/match_room/${encodeURIComponent(matchIdxValue)}`;
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = function () {
+            console.log('Connected to the WebSocket server');
+        };
+
+        ws.onmessage = function (event) {
+            const messageData = JSON.parse(event.data);
+            const item = document.createElement('li');
+            item.textContent = `[${messageData.timestamp}] ${messageData.nick}: ${messageData.message}`;
+            document.getElementById('messages').appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+        ws.onclose = function () {
+            console.log('WebSocket connection closed');
+            // Reconnect attempt
+            setTimeout(connect, 1000);
+        };
+
+        ws.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
+    }
+
+
+    function loadMessages() {
+        fetch(`/getMessages?match_idx=${encodeURIComponent(matchIdxValue)}`)
+            .then(response => response.json())
+            .then(data => {
+                const messagesList = document.getElementById('messages');
+                messagesList.innerHTML = ''; // 기존 메시지 삭제
+
+                data.forEach(message => {
+                    const item = document.createElement('li');
+                    item.textContent = `[${message.timestamp}] ${message.nick}: ${message.message}`;
+                    messagesList.appendChild(item);
+                });
+
+                window.scrollTo(0, document.body.scrollHeight);
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+
+        connect();
+        loadMessages();
+
+        const inputField = document.getElementById('input');
+        const chatBtn = document.getElementById('chatBtn');
+
+        // 입력 필드에서 Enter 키가 눌렸을 때
+        inputField.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 기본 Enter 동작 방지 (폼 제출 등)
+                sendMessage(); // sendMessage 함수 호출
+            }
+        });
+        var joinButton = document.getElementById("joinButton");
+        // joinButton 요소 선택
+        var joinButton = document.querySelector('.btn'); // 예시로 .btn 클래스 사용
+
+        // joinButton이 존재하는지 확인
+        if (joinButton) {
+            // joinButton이 존재할 때만 data-user-count 속성 값 가져오기
+            var userCount = joinButton.getAttribute("data-user-count");
+            console.log(userCount);
+        } else {
+            console.error("joinButton 요소를 찾을 수 없습니다.");
+        }
+
+        function checkUserLimit() {
+            if (userCount >= 10) {
+                alert("참가 인원이 이미 10명을 초과했습니다. 더 이상 참가할 수 없습니다.");
+                return false;
+            }
+            return true;
+        }
+
+        if (userCount >= 10) {
+            joinButton.disabled = true;
+        }
+
+        document.querySelector('form').onsubmit = checkUserLimit;
+    });
+    
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+.reservation-details {
+    width: 70%;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-details h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.reservation-details p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.teams-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.team-section {
+    width: 45%;
+}
+
+.team-section h2 {
+    color: #444;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+}
+
+.team-list li {
+    font-size: 16px;
+    color: #666;
+    padding: 5px 0;
+}
+
+.winner-btn,
+.update-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.winner-btn:hover,
+.update-btn:hover {
+    background-color: #218838;
+}
+
+.winner-btn:disabled,
+.update-btn:disabled {
+    background-color: #c3e6cb;
+    cursor: not-allowed;
+}

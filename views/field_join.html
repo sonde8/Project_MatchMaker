@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/field_join.css">
+</head>
+<body>
+    
+<form action="/user/field_join" method='post'>
+    구장 이름 : <input type="text" name="field_name" required>
+    <br />
+    <div class="field_region">
+        <select id="main_region" name="main_region" onchange="updateSubRegion()">
+            <option value="서울">서울특별시</option>
+            <option value="광주">광주광역시</option>
+            <option value="전북">전북특별자치도</option>
+        </select>
+        
+        <select id="sub_region" name="sub_region" required>
+         
+        </select>
+    </div>
+    구장 주소 : <input type="text" name="field_addr" required>
+    <br />
+    구장 상세 정보 : <input type="text" name="field_detail" required>
+    <br>
+    가지고 있는 코트 개수 : <input type="number" min="1" name="court_count" required>
+    <br>
+    구장 운영시작시간 : <input type="time" name="field_oper_st_time" required>
+    <br>
+    구장 운영마감시간 : <input type="time" name="field_oper_ed_time" required>
+    <br>
+    <input id="join_btn" type="submit" value="구장 등록">
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSubRegion();
+  });
+  
+  function updateSubRegion() {
+      const subRegionSelect = document.getElementById('sub_region');
+      const mainRegion = document.getElementById('main_region');
+  
+      if (!mainRegion || !subRegionSelect) {
+          console.error('`main_region` 또는 `sub_region` 요소를 찾을 수 없습니다.');
+          return;
+      }
+  
+    
+      subRegionSelect.innerHTML = '';
+  
+      const selectedRegion = mainRegion.value;
+      let options = [];
+  
+      if (selectedRegion === '서울') {
+          options = [
+              { value: '종로', text: '종로구' },
+              { value: '강남', text: '강남구' },
+              { value: '동대문', text: '동대문구' }
+          ];
+      } else if (selectedRegion === '광주') {
+          options = [
+              { value: '북구', text: '북구' },
+              { value: '광산구', text: '광산구' },
+              { value: '서구', text: '서구' },
+              { value: '동구', text: '동구' },
+              { value: '남구', text: '남구' }
+          ];
+      } else if (selectedRegion === '전북') {
+          options = [
+              { value: '전주', text: '전주시' },
+              { value: '익산', text: '익산시' },
+              { value: '군산', text: '군산시' }
+          ];
+      }
+  
+  
+      options.forEach(option => {
+          const opt = document.createElement('option');
+          opt.value = option.value;
+          opt.textContent = option.text;
+          subRegionSelect.appendChild(opt);
+      });
+  }
+  
+  
+  </script>
+</body>
+</html>

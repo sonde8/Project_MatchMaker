@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="/css/join_style.css">
+</head>
+
+<body>
+    <section>
+        <form id="signupForm" action="/user/join1" method="post">
+            <h1>회원가입</h1>
+            <div class="inputbox">
+                <ion-icon name="person-outline"></ion-icon>
+                <input type="text" id="username" name="user_id" required>
+                <label for="">아이디</label>
+                <p class="error-message" id="username-error"></p>
+            </div>
+            <div class="inputbox">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input type="password" id="password" name="user_pw" required>
+                <label for="">비밀번호</label>
+            </div>
+            <div class="inputbox">
+                <input type="password" id="confirm-password" required>
+                <label for="">비밀번호 확인</label>
+                <p class="error-message" id="password-error"></p>
+            </div>
+            <div class="inputbox">
+                <ion-icon name="person-outline"></ion-icon>
+                <input type="text" name="user_nick" required>
+                <label for="">닉네임</label>
+            </div>
+            <div class="inputbox">
+                <ion-icon name="calendar-number-outline"></ion-icon>
+                <input type="number" name="user_birthdate"  placeholder="생년월일 8자리">
+                <label for="">출생년도</label>
+            </div>
+            <div class="gender_field">
+                <ion-icon name="transgender-outline"></ion-icon>
+                <label><input type="radio" name="user_gender" value="m">남자</label>
+                <label><input type="radio" name="user_gender" value="w">여자</label>
+            </div>
+            <div class="inputbox">
+                <ion-icon name="phone-portrait-outline"></ion-icon>
+                <input type="text" name="user_phone" class="form-control"  maxlength="14" required>
+                <label for="">전화번호</label>
+            </div>
+            <button type="submit">회원가입</button>
+        </form>
+    </section>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

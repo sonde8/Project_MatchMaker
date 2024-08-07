@@ -1,0 +1,182 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Pretendard-Regular';
+    font-size: 14px;
+    height: 100vh;
+    margin: 0;
+    padding: 0 50px;
+    background: url(../img/1234567.jpg) no-repeat center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #252547;
+}
+
+/* 네비바 관련 css */
+#navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    height: 70px;
+    padding-top: 8px;
+}
+
+.main_logo {
+    width: 200px;
+    height: 100px;
+}
+
+.user_logo {
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-weight: 900;
+}
+
+.logout_logo {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    color: white;
+}
+
+
+
+/* form 태그 */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 60px);
+    /* 네비바 높이를 뺀 전체 높이 */
+}
+
+#createMatchForm {
+    width: 80%;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+
+#match_info {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    font-family: 'Pretendard-Regular';
+}
+
+.submit-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#submit {
+    padding: 10px 20px;
+    background-color: #252547;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#submit:hover {
+    background-color: #191930;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+}
+.checkbox-group label {
+    margin: 0;
+}
+
+#createMatchForm {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#match_date{
+    font-family: 'Pretendard-Regular';
+}
+
+#main_region{
+    font-family: 'Pretendard-Regular';
+}
+
+#sub_region{
+    font-family: 'Pretendard-Regular';
+}
+
+
+
+/* 방 개설 시간관련 css */
+.time-bar-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.time-bar {
+    display: flex;
+    width: max-content;
+    height: 40px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+.time-slot {
+    width: 40px;
+    height: 100%;
+    border-right: 1px solid #ccc;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.time-slot:hover {
+    background-color: #e0e0e0;
+}
+
+.time-slot.selected {
+    background-color: #4CAF50;
+}
+
+.time-label {
+    font-size: 12px;
+    padding: 2px;
+}

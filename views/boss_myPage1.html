@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Maker - 마이페이지</title>
+    <link rel="stylesheet" href="/css/boss_myPage.css">
+</head>
+
+<body>
+    <nav id="navbar">
+        <a href="/boss_main">
+            <img src="/img/logo2.png" alt="Match Maker Logo" class="main_logo">
+        </a>
+        <div class="user_info">
+            <a href="#">
+                <ion-icon name="person-outline" class="user_logo"></ion-icon>
+            </a>
+            <a href="/user/logout">
+                <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+            </a>
+        </div>
+    </nav>
+
+
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile_wrapper">
+                <img id="profileImage" src="" alt="Profile Image" class="profile_image circle"
+                    onerror="this.onerror=null;this.src='/img/ball.png';">
+                <label for="imageUpload" class="upload-icon">
+                    <ion-icon name="camera"></ion-icon>
+                </label>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            </div>
+            <h3 class="username">{{rows[0].user_nick}}</h3>
+            <ul class="menu">
+                <li>나의 프로필</li>
+
+            </ul>
+        </div>
+        <div class="content">
+            <div class="box">
+                <h2>정보수정</h2>
+                <form action="/user/boss_info_update" method="post">
+                    <div class="inputbox">
+                        변경할 이름 <input type="text" name="name" class="edit_input" value="{{bossInfo[0].boss_name}}">
+                        <br>
+                        변경할 pw <input type="password" name="pw" class="edit_input" value="●●●●●●●●●●●●"> <br>
+                        변경할 휴대폰 번호 <input type="text" name="phone" class="edit_input"
+                            value="{{bossInfo[0].boss_phone}}"> <br>
+                        <input type="submit" value="정보수정" class="edit_button">
+                    </div>
+                </form>
+            </div>
+            <div class="box">
+                <h2>구장 정보 수정</h2>
+                <div class="inputbox">
+                    <form action="/user/field_info_update" method="post">
+                        변경할 구장 이름 <input type="text" name="field_name" class="edit_input"
+                            value="{{fieldInfo[0].field_name}}"> <br>
+                        변경할 구장 주소 <input type="text" name="field_addr" class="edit_input"
+                            value="{{fieldInfo[0].field_addr}}"> <br>
+                        변경할 구장 상세 정보 <input type="text" name="field_detail" class="edit_input"
+                            value="{{fieldInfo[0].field_detail}}"> <br>
+                        <input type="submit" value="정보수정" class="edit_button">
+                    </form>
+                </div>
+            </div>
+            <div class="box">
+                <h2>코트 정보 수정</h2>
+                <div class="inputbox">
+                    <form action="/user/court_info_update" method="post">
+                        변경할 코트 수 <input type="number" min="1" name="court_count" class="edit_input"
+                            value="{{courtcount}}"> <br>
+                        <input type="submit" value="정보수정" class="edit_button">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="bossid" value="{{idName}}">
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        const bossId = document.getElementById("bossid").value; // 사용자 ID를 실제 사용자 ID로 설정
+
+        // 페이지 로드 시 프로필 이미지 불러오기
+        window.addEventListener('load', () => {
+            const apiUrl = `/api/boss/profile-image/${bossId}`;
+            fetch(apiUrl)
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    } else {
+                        throw new Error('Profile image not found');
+                    }
+                })
+                .then(blob => {
+                    const imageUrl = URL.createObjectURL(blob);
+                    document.getElementById('profileImage').src = imageUrl;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById('imageUpload').addEventListener('change', function () {
+            const file = this.files[0];
+            const formData = new FormData();
+            formData.append('img', file);
+            formData.append('bossId', bossId);
+
+            fetch('/api/boss/upload', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+    <!-- <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script> -->
+</body>
+
+</html>

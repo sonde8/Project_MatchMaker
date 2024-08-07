@@ -1,0 +1,147 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Pretendard-Regular', sans-serif;
+    color: black;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: url(../img/background1.jpg) no-repeat center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #fff;
+    margin-top: 100px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 20px;
+}
+
+#navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.main_logo {
+    width: 200px;
+    height: 100px;
+}
+
+.user_info {
+    display: flex;
+    align-items: center;
+}
+
+.user_logo, .logout_logo {
+    width: 30px;
+    height: 30px;
+}
+
+.user_info a {
+    margin-left: 10px; /* 모든 아이콘 사이의 간격을 동일하게 설정 */
+}
+
+.user_info a:first-child {
+    margin-left: 0; /* 첫 번째 아이콘의 왼쪽 마진 제거 */
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    font-weight: 900;
+}
+
+.user_info a {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+}
+
+form {
+    width: 100%;
+    max-width: 400px;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    /* background-color: #59B4C3; */
+}
+
+.inputbox {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    color: black;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 1rem;
+}
+
+#join_btn {
+    background-color: green;
+    color: white;
+}
+
+label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    color: #fff;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+input:focus ~ label,
+input:valid ~ label {
+    top: -20px;
+    font-size: 0.8rem;
+    color: #03e9f4;
+}
+
+.field_region {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.field_region select {
+    width: 48%;
+    color: black;
+}
+
+
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px 0;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 1rem;
+}
+
+input[type="submit"]:hover {
+    background: rgba(255, 255, 255, 0.8);
+}

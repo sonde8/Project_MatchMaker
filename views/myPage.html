@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Maker - 마이페이지</title>
+    <link rel="stylesheet" href="/css/mypage2.css">
+
+
+</head>
+
+<body>
+    <nav id="navbar">
+        <a href="/user/match"><img src="/img/logo2.png" alt="Match Maker Logo" class="main_logo"></a>
+        <div class="user_info">
+            <a href="#">
+                <ion-icon name="person-outline" class="user_logo"></ion-icon>
+            </a>
+            <a href="/user/logout">
+                <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile_wrapper">
+                <img id="profileImage" src="" alt="Profile Image" class="profile_image circle"
+                    onerror="this.onerror=null;this.src='/img/ball.png';">
+                <label for="imageUpload" class="upload-icon">
+                    <ion-icon name="camera"></ion-icon>
+                </label>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            </div>
+            <h3 class="username">{{userInfo[0].user_nick}}</h3>
+            <ul class="menu">
+                <li>레이팅</li>
+                <li>{{userInfo[0].user_rate}}</li>
+                <li>랭크</li>
+                <li>{{userInfo[0].user_rank}}</li>
+                <br>
+                <li>슈팅 {{userInfo[0].user_shooting_point}}</li>
+                <li>패스 {{userInfo[0].user_pass_point}}</li>
+                <li>드리블 {{userInfo[0].user_dribble_point}}</li>
+                <li>체력 {{userInfo[0].user_stamina_point}}</li>
+                <li>매너 {{userInfo[0].user_manner_point}}</li>
+                <li>웃음 {{userInfo[0].user_smile_point}}</li>
+            </ul>
+            <div class="box">
+                <h2>경기 일정</h2>
+                <!-- 경기 일정 내용 추가 -->
+                {% for matchList in matchInfo %}
+                {% if matchList.isMatchEnded  == false%}
+                <div class="click">
+                    {% if matchList.rate_match_yn == 'Y' %}
+                    <h3>⚽ 레이팅 매치 ⚽</h3>
+                    {% else %}
+                    <h3>⚽ 일반 매치 ⚽</h3>
+                    {% endif %}
+
+                    {{matchList.match_title}}<br><br>
+
+                    지역 {{matchList.match_region}}<br>
+                    경기날짜 {{matchList.match_date}}<br>
+                    경기시간 {{matchList.match_st_dt}} ~ {{matchList.match_ed_dt}}<br><br>
+                    
+                    {% for teamList in teamInfoRows %}
+                    {% if matchList.match_idx == teamList.match_idx %}
+                    TEAM A : {{teamList.teamA_user1}}, {{teamList.teamA_user2}}, {{teamList.teamA_user3}},
+                    {{teamList.teamA_user4}}, {{teamList.teamA_user5}}<br><br>
+                    TEAM B : {{teamList.teamB_user1}}, {{teamList.teamB_user2}}, {{teamList.teamB_user3}},
+                    {{teamList.teamB_user4}}, {{teamList.teamB_user5}}
+                    {% endif %}
+                    {% endfor %}
+
+                    <h3>⚽ 예약 내역 ⚽</h3>
+                    {% for reservList in reservInfoRows %}
+                    {% if matchList.match_idx == reservList.match_idx %}
+                    예약자 : {{reservList.user_id}}<br>
+                    예약구장 : {{reservList.field_name}},{{reservList.court_name}}<br>
+                    경기날짜 : {{reservList.reserv_dt}}<br>
+                    경기시간 : {{reservList.reserv_st_tm}} ~ {{reservList.reserv_ed_tm}}<br>
+                    {% endif %}
+                    {% endfor %}
+                </div><br><br>
+                {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="content">
+            <div class="box">
+                <h2>정보수정</h2>
+                <form action="/user/update" method="post">
+                    <div class="inputbox">
+                        변경할 닉네임 <input type="text" name="nick" class="edit_input"
+                            placeholder="{{userInfo[0].user_nick}}"> <br>
+                        변경할 pw <input type="password" name="pw" class="edit_input" placeholder="●●●●●●●●●●●●"> <br>
+                        변경할 휴대폰 번호 <input type="text" name="phone" class="edit_input"
+                            placeholder="{{userInfo[0].user_phone}}"> <br>
+                        <input type="submit" value="정보수정" class="edit_button">
+                    </div>
+                </form>
+            </div>
+            <div class="box">
+                <h2>레이팅</h2>
+                <span class="rate_box">{{userInfo[0].user_rate}}</span>
+                <!-- 레이팅 내용 추가 -->
+            </div>
+
+            <div class="box">
+                <h2>경기 전적</h2>
+                <!-- 경기 전적 내용 추가 -->
+                {% for matchList in matchInfo %}
+                {% if matchList.isMatchEnded %}
+                <div class="click">
+                    {% if matchList.rate_match_yn == 'Y' %}
+                    <h2>⚽ 레이팅 매치 ⚽</h2>
+                    {% else %}
+                    <h2>⚽ 일반 매치 ⚽</h2>
+                    {% endif %}
+                    <h3>{{matchList.match_title}}</h3>
+                    지역 {{matchList.match_region}}&nbsp;&nbsp;&nbsp;
+                    경기날짜 {{matchList.match_date}}&nbsp;&nbsp;&nbsp;
+                    경기시간 {{matchList.match_st_dt}} ~
+                    {{matchList.match_ed_dt}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
+                    참가선수 {{matchList.join_user}}<br><Br>
+                    경기정보 {{matchList.match_info}}<br><Br>
+                    {% for teamList in teamInfoRows %}
+                    {% if matchList.match_idx == teamList.match_idx %}
+                    TEAM A : {{teamList.teamA_user1}}, {{teamList.teamA_user2}}, {{teamList.teamA_user3}},
+                    {{teamList.teamA_user4}}, {{teamList.teamA_user5}}
+                    TEAM B : {{teamList.teamB_user1}}, {{teamList.teamB_user2}}, {{teamList.teamB_user3}},
+                    {{teamList.teamB_user4}}, {{teamList.teamB_user5}}
+                    {% endif %}
+                    {% endfor %}<br><br>
+                    {% if [teamList.teamA_user1, teamList.teamA_user2, teamList.teamA_user3, teamList.teamA_user4,
+                    teamList.teamA_user5] in id %}
+                    경기결과 : {{ matchList.team_a }}
+                    {% else %}
+                    경기결과 : {{ matchList.team_b }}
+                    {% endif %}
+                </div><br><br>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="{{id}}" id="id">
+    <!-- 모달 구조 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <div class="modal-header">
+                <h1>⚽ 최근 경기 전적 ⚽</h1>
+            </div>
+            <div id="modalContent">
+                {% set latestMatch = null %}
+                {% set latestTimestamp = 0 %}
+
+                {% for matchList in matchInfo %}
+                {% if matchList.isMatchEnded and matchList.matchTimestamp > latestTimestamp %}
+                {% set latestMatch = matchList %}
+                {% set latestTimestamp = matchList.matchTimestamp %}
+                {% endif %}
+                {% endfor %}
+
+                {% if latestMatch %}
+                <div class="modal_content">
+                    {% if latestMatch.rate_match_yn == 'Y' %}
+                    <h2>레이팅 매치</h2>
+                    {% else %}
+                    <h2>일반 매치</h2>
+                    {% endif %}
+                    <h3>{{ latestMatch.match_title }}</h3>
+                    지역: {{ latestMatch.match_region }}<br><br>
+                    경기날짜: {{ latestMatch.match_date }}&nbsp;&nbsp;&nbsp;
+                    경기시간: {{ latestMatch.match_st_dt }} ~ {{ latestMatch.match_ed_dt
+                    }}<br><br>
+                    참가선수: {{ latestMatch.join_user }}<br><br>
+                    {% for teamList in teamInfoRows %}
+                    {% if latestMatch.match_idx == teamList.match_idx %}
+                    TEAM A: {{ teamList.teamA_user1 }}, {{ teamList.teamA_user2 }}, {{ teamList.teamA_user3 }}, {{
+                    teamList.teamA_user4 }}, {{ teamList.teamA_user5 }}<br>
+                    TEAM B: {{ teamList.teamB_user1 }}, {{ teamList.teamB_user2 }}, {{ teamList.teamB_user3 }}, {{
+                    teamList.teamB_user4 }}, {{ teamList.teamB_user5 }}
+                    {% endif %}
+                    {% endfor %}<br><br>
+                    {% if [teamList.teamA_user1, teamList.teamA_user2, teamList.teamA_user3, teamList.teamA_user4,
+                    teamList.teamA_user5] in id %}
+                    경기결과 : {{ latestMatch.team_a }}
+                    {% else %}
+                    경기결과 : {{ latestMatch.team_b }}
+                    {% endif %}
+
+                </div><br><br>
+                {% endif %}
+            </div>
+        </div>
+
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <script src="/js/mypage.js"></script>
+
+        <script>
+            // 모달 열기
+            function showPopup() {
+                document.getElementById("myModal").style.display = "block";
+            }
+
+            // 페이지 로드 시 팝업 표시
+            window.onload = showPopup;
+
+            // 모달 닫기
+            function closePopup() {
+                document.getElementById("myModal").style.display = "none";
+            }
+
+            // 모달 외부 클릭 시 닫기
+            window.onclick = function (event) {
+                var modal = document.getElementById("myModal");
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            const userId = document.getElementById("id").value; // 사용자 ID를 실제 사용자 ID로 설정
+            // 페이지 로드 시 프로필 이미지 불러오기
+            window.addEventListener('load', () => {
+                const apiUrl = `/api/profile-image/${userId}`;
+                fetch(apiUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.blob();
+                        } else {
+                            throw new Error('Profile image not found');
+                        }
+                    })
+                    .then(blob => {
+                        const imageUrl = URL.createObjectURL(blob);
+                        document.getElementById('profileImage').src = imageUrl;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+            document.getElementById('imageUpload').addEventListener('change', function () {
+                const file = this.files[0];
+                const formData = new FormData();
+                formData.append('img', file);
+                formData.append('userId', userId);
+
+                fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+
+
+        </script>
+
+</body>
+
+</html>

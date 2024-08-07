@@ -1,0 +1,160 @@
+{% block content %}
+<link rel="stylesheet" href="/css/result_set.css">
+
+
+<div class="reservation-details">
+    <h1>예약 상세 정보</h1>
+
+    <p><strong>매치 제목:</strong> {{ reservation.match_title }}</p>
+    <p><strong>사용된 코트:</strong> {{ reservation.court_name }}</p>
+    <p><strong>예약 날짜:</strong> {{ reservation.reserv_dt }}</p>
+    <p><strong>예약 시간:</strong> {{ reservation.reserv_st_tm }} ~ {{ reservation.reserv_ed_tm }}</p>
+
+    <form id="updateRatingsForm" action="/manage/update_ratings" method="POST">
+        <input type="hidden" name="reservation_idx" value="{{ reservation_idx }}">
+        <input type="hidden" name="rate_match_yn" value="{{ reservation.rate_match_yn }}">
+        <div class="teams-container">
+            <div class="team-section">
+                <h2>팀 A</h2>
+                <h3>평균 레이트 : {{teamAavgRate}}</h3>
+                <ul class="team-list">
+                    <li><strong>사용자 1:</strong> {{ reservation.teamA_user1 }}, {{ teamAUser1Rate }} <span
+                            id="a_player1_newRt"></span></li>
+                    <input type="hidden" name="teamA_user1" value="{{ reservation.teamA_user1 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player1Rt" value="{{ teamAUser1Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player1_newRtInput">
+
+                    <li><strong>사용자 2:</strong> {{ reservation.teamA_user2 }}, {{ teamAUser2Rate }} <span
+                            id="a_player2_newRt"></span></li>
+                    <input type="hidden" name="teamA_user2" value="{{ reservation.teamA_user2 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player2Rt" value="{{ teamAUser2Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player2_newRtInput">
+
+                    <li><strong>사용자 3:</strong> {{ reservation.teamA_user3 }}, {{ teamAUser3Rate }} <span
+                            id="a_player3_newRt"></span></li>
+                    <input type="hidden" name="teamA_user3" value="{{ reservation.teamA_user3 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player3Rt" value="{{ teamAUser3Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player3_newRtInput">
+
+                    <li><strong>사용자 4:</strong> {{ reservation.teamA_user4 }}, {{ teamAUser4Rate }} <span
+                            id="a_player4_newRt"></span></li>
+                    <input type="hidden" name="teamA_user4" value="{{ reservation.teamA_user4 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player4Rt" value="{{ teamAUser4Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player4_newRtInput">
+
+                    <li><strong>사용자 5:</strong> {{ reservation.teamA_user5 }}, {{ teamAUser5Rate }} <span
+                            id="a_player5_newRt"></span></li>
+                    <input type="hidden" name="teamA_user5" value="{{ reservation.teamA_user5 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player5Rt" value="{{ teamAUser5Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player5_newRtInput">
+                </ul>
+                <button class="winner-btn" type="button" onclick="setWinner('A')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>팀 A 승자 설정</button>
+            </div>
+
+            <div class="team-section">
+                <h2>팀 B</h2>
+                <h3>평균 레이트 : {{teamBavgRate}}</h3>
+                <ul class="team-list">
+                    <li><strong>사용자 1:</strong> {{ reservation.teamB_user1 }}, {{ teamBUser1Rate }} <span
+                            id="b_player1_newRt"></span></li>
+                    <input type="hidden" name="teamB_user1" value="{{ reservation.teamB_user1 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player1Rt" value="{{ teamBUser1Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player1_newRtInput">
+
+                    <li><strong>사용자 2:</strong> {{ reservation.teamB_user2 }}, {{ teamBUser2Rate }} <span
+                            id="b_player2_newRt"></span></li>
+                    <input type="hidden" name="teamB_user2" value="{{ reservation.teamB_user2 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player2Rt" value="{{ teamBUser2Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player2_newRtInput">
+
+                    <li><strong>사용자 3:</strong> {{ reservation.teamB_user3 }}, {{ teamBUser3Rate }} <span
+                            id="b_player3_newRt"></span></li>
+                    <input type="hidden" name="teamB_user3" value="{{ reservation.teamB_user3 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player3Rt" value="{{ teamBUser3Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player3_newRtInput">
+
+                    <li><strong>사용자 4:</strong> {{ reservation.teamB_user4 }}, {{ teamBUser4Rate }} <span
+                            id="b_player4_newRt"></span></li>
+                    <input type="hidden" name="teamB_user4" value="{{ reservation.teamB_user4 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player4Rt" value="{{ teamBUser4Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player4_newRtInput">
+
+                    <li><strong>사용자 5:</strong> {{ reservation.teamB_user5 }}, {{ teamBUser5Rate }} <span
+                            id="b_player5_newRt"></span></li>
+                    <input type="hidden" name="teamB_user5" value="{{ reservation.teamB_user5 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player5Rt" value="{{ teamBUser5Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player5_newRtInput">
+                </ul>
+                <button class="winner-btn" type="button" onclick="setWinner('B')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>팀 B 승자 설정</button>
+            </div>
+        </div>
+        <button class="update-btn" type="submit" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>Update Ratings</button>
+    </form>
+</div>
+
+
+
+<script>
+
+    function updateEloRatings(homeRatings, awayRatings, gameResult) {
+        let homeTeamAvg = homeRatings.reduce((a, b) => a + b, 0) / homeRatings.length;
+        let awayTeamAvg = awayRatings.reduce((a, b) => a + b, 0) / awayRatings.length;
+
+        let newHomeRatings = homeRatings.map(homeRating => {
+            let expectedHomeWinProb = 1 / (1 + Math.pow(10, (awayTeamAvg - homeRating) / 400));
+            return homeRating + Math.round(32 * (gameResult - expectedHomeWinProb));
+        });
+
+        let newAwayRatings = awayRatings.map(awayRating => {
+            let expectedAwayWinProb = 1 / (1 + Math.pow(10, (homeTeamAvg - awayRating) / 400));
+            return awayRating + Math.round(32 * (1 - gameResult - expectedAwayWinProb));
+        });
+
+        return { newHomeRatings, newAwayRatings };
+    }
+
+    function displayNewRatings(homeNewRatings, awayNewRatings) {
+        for (let i = 0; i < homeNewRatings.length; i++) {
+            document.getElementById(`a_player${i + 1}_newRt`).innerText = homeNewRatings[i];
+            document.getElementById(`a_player${i + 1}_newRtInput`).value = homeNewRatings[i];
+        }
+        for (let i = 0; i < awayNewRatings.length; i++) {
+            document.getElementById(`b_player${i + 1}_newRt`).innerText = awayNewRatings[i];
+            document.getElementById(`b_player${i + 1}_newRtInput`).value = awayNewRatings[i];
+        }
+    }
+
+    function setWinner(winningTeam) {
+        let confirmationMessage = `${winningTeam} 팀 승리가 맞나요?`;
+        if (!confirm(confirmationMessage)) {
+            return; // If user cancels, do nothing
+        }
+
+        alert(`축하합니다! ${winningTeam} 팀이 승리했습니다!`);
+
+        let homeRatings = [
+            parseInt(document.getElementById("a_player1Rt").value),
+            parseInt(document.getElementById("a_player2Rt").value),
+            parseInt(document.getElementById("a_player3Rt").value),
+            parseInt(document.getElementById("a_player4Rt").value),
+            parseInt(document.getElementById("a_player5Rt").value)
+        ];
+
+        let awayRatings = [
+            parseInt(document.getElementById("b_player1Rt").value),
+            parseInt(document.getElementById("b_player2Rt").value),
+            parseInt(document.getElementById("b_player3Rt").value),
+            parseInt(document.getElementById("b_player4Rt").value),
+            parseInt(document.getElementById("b_player5Rt").value)
+        ];
+
+        let homeGameResult = (winningTeam === 'A') ? 1 : 0;
+        let awayGameResult = (winningTeam === 'A') ? 0 : 1;
+
+        let { newHomeRatings, newAwayRatings } = updateEloRatings(homeRatings, awayRatings, homeGameResult);
+
+        displayNewRatings(newHomeRatings, newAwayRatings);
+    }
+
+</script>
+{% endblock %}

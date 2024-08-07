@@ -1,0 +1,177 @@
+{% block content %}
+
+<link rel="stylesheet" href="/css/reserv.css">
+
+<nav id="navbar">
+    <a href="/user/match"><img src="/img/logo1.png" alt="" class="main_logo"></a>
+    <div class="user_info">
+        <a href="/user/myPage">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>
+</nav>
+
+<div class="form-container">
+    <form id="fieldForm" action="/reserv/reservAll" method="get">
+        <input type="hidden" name="match_idx" value="{{ match_idx }}">
+        <label for="field">필드:</label>
+        <select id="field" name="field_idx" required onchange="submitFieldForm()">
+            <option value="">필드를 선택하세요</option>
+            {% for item in fields %}
+            <option value="{{ item.field_idx }}" {% if selected_field_idx==item.field_idx %} selected {% endif %}>
+                {{ item.field_name }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <label for="court">코트:</label>
+        <select id="court" name="court_idx" required onchange="submitFieldForm()">
+            <option value="">코트를 선택하세요</option>
+            {% for item in courts %}
+            <option value="{{ item.court_idx }}" {% if selected_court_idx==item.court_idx %} selected {% endif %}>
+                {{ item.court_name }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <label for="reserv_dt">예약 날짜:</label>
+        <input type="date" id="reserv_dt" name="reserv_dt" value="{{ reserv_date }}" required onchange="submitFieldForm()"><br>
+    </form>
+
+    <form id="reservationForm" action="/reserv/reserv" method="post">
+        <input type="hidden" name="field_idx" value="{{ selected_field_idx }}">
+        <input type="hidden" name="court_idx" value="{{ selected_court_idx }}">
+        <input type="hidden" name="reserv_dt" value="{{ reserv_date }}">
+        <input type="hidden" name="match_idx" value="{{ match_idx }}">
+
+        <div class="time-bar-container">
+            <h2>시간대 선택 </h2> 
+            <div class="time-bar">
+                {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"] %}
+                {% set min_time = field_oper_st_time.split(':')[0]|int %}
+                {% set max_time = field_oper_ed_time.split(':')[0]|int %}
+                {% set is_24_hours = (min_time == 0 and max_time == 0) %}
+
+                {% for time in times %}
+                    {% set hour = time.split(':')[0]|int %}
+                    {% set is_disabled = ((is_24_hours != is_24_hours) and (hour < min_time or max_time <= hour)) %}
+                    {% for reserv in reservations %}
+                        {% set reserv_st_tm = reserv.reserv_st_tm.split(':')[0]|int %}
+                        {% set reserv_ed_tm = reserv.reserv_ed_tm.split(':')[0]|int %}
+                        {% if reserv.reserv_dt == reserv_date and (reserv_st_tm <= hour and hour < reserv_ed_tm) %}
+                            {% set is_disabled = true %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="time-slot {% if is_disabled %}disabled{% else %}enabled{% endif %}" data-time="{{ time }}">
+                        <span class="time-label">{{ time }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit">예약하기</button>
+    </form>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    function submitFieldForm() {
+        const fieldForm = document.getElementById('fieldForm');
+        fieldForm.submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const reservDateInput = document.getElementById('reserv_dt');
+        const timeSlots = document.querySelectorAll('.time-slot');
+        const minTimeStr = "{{ field_oper_st_time }}";
+        const maxTimeStr = "{{ field_oper_ed_time }}";
+        const reservDateStr = "{{ reserv_date }}";
+        const currentDateStr = "{{ current_date }}";
+        const currentTimeStr = "{{ current_time }}";
+
+        // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오기
+        const today = new Date().toISOString().split('T')[0];
+        
+        // 날짜 입력 필드의 최소값을 오늘로 설정
+        reservDateInput.min = today;
+
+        const is24Hours = (minTimeStr === "00:00:00" && maxTimeStr === "00:00:00");
+
+        const now = new Date();
+        const reservDate = new Date(reservDateStr);
+        const currentDate = new Date(currentDateStr);
+        const currentHour = now.getHours();
+
+        timeSlots.forEach(slot => {
+            const timeValue = parseInt(slot.getAttribute('data-time').split(':')[0], 10);
+
+            if (!is24Hours) {
+                const minTime = parseInt(minTimeStr.split(':')[0], 10);
+                const maxTime = parseInt(maxTimeStr.split(':')[0], 10);
+
+                if (timeValue < minTime || timeValue >= maxTime) {
+                    slot.classList.add('disabled');
+                }
+            }
+
+            // 오늘 날짜에 대해서만 과거 시간 비활성화
+            if (reservDateStr === currentDateStr && timeValue <= currentHour) {
+                slot.classList.add('disabled');
+            }
+
+            slot.addEventListener('click', function() {
+                if (!slot.classList.contains('disabled')) {
+                    slot.classList.toggle('selected');
+                    updateSlots();
+                }
+            });
+        });
+
+        reservationForm.addEventListener('submit', function(event) {
+
+            // 선택된 시간 슬롯의 값을 form에 추가
+            const selectedSlots = document.querySelectorAll('.time-slot.selected');
+            selectedSlots.forEach(slot => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'reserv_tm';
+                input.value = slot.getAttribute('data-time');
+                reservationForm.appendChild(input);
+            });
+        });
+        
+    });
+
+    function updateSlots() {
+        const timeSlots = document.querySelectorAll('.time-slot');
+        let startChecked = null;
+        let endChecked = null;
+
+        timeSlots.forEach((slot, index) => {
+            if (slot.classList.contains('selected')) {
+                if (startChecked === null) {
+                    startChecked = index;
+                }
+                endChecked = index;
+            }
+        });
+
+        if (startChecked !== null && endChecked !== null) {
+            for (let i = startChecked; i <= endChecked; i++) {
+                if (timeSlots[i].classList.contains('disabled')) {
+                    alert("선택한 범위 내에 예약할 수 없는 시간이 있습니다.");
+                    timeSlots.forEach(slot => slot.classList.remove('selected'));
+                    return;
+                }
+                timeSlots[i].classList.add('selected');
+            }
+        }
+    }
+</script>
+
+{% endblock %}

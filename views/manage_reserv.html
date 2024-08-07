@@ -1,0 +1,121 @@
+
+<!-- <h1>🍥 예약 관리 페이지 입니당 🍥</h1> -->
+ <link rel="stylesheet" href="/css/manage_reserv.css">
+ <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<nav id="navbar">
+    <img src="/img/logo2.png" alt="" class="main_logo">
+    <div class="user_info">
+        <a href="/boss_myPage1">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>
+</nav>
+ 
+
+{% if boss_id %}
+    <p>관리자: {{ boss_id }}</p>
+    {% if reservations.length > 0 %}
+        <h3>예약 정보</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>예약 ID</th>
+                    <th>사용자 ID</th>
+                    <th>코트 이름</th>
+                    <th id="reservationDateHeader" onclick="sortTableByDate()">예약 날짜</th>
+                    <th>예약 시작 시간</th>
+                    <th>예약 종료 시간</th>
+                    <th>매치 제목</th>
+                    <th>팀 A</th>
+                    <!-- <th>팀 A 사용자 2</th>
+                    <th>팀 A 사용자 3</th>
+                    <th>팀 A 사용자 4</th>
+                    <th>팀 A 사용자 5</th> -->
+                    <th>팀 B</th>
+                    <!-- <th>팀 B 사용자 2</th>
+                    <th>팀 B 사용자 3</th>
+                    <th>팀 B 사용자 4</th>
+                    <th>팀 B 사용자 5</th> -->
+                    <th>예약 취소</th>
+                </tr>
+            </thead>
+            <tbody id="reservationTable">
+                {% for reservation in reservations %}
+                <tr data-court-name="{{ reservation.court_name }}" data-reservation-date="{{ reservation.reserv_dt }}" >
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_idx }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.user_id }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.court_name }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_dt }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_st_tm }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_ed_tm }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.match_title }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.teamA_user1 }}, {{ reservation.teamA_user2 }}, {{ reservation.teamA_user3 }}, {{ reservation.teamA_user4 }}, {{ reservation.teamA_user5 }}</td>
+                    <!-- <td>{{ reservation.teamA_user2 }}</td>
+                    <td>{{ reservation.teamA_user3 }}</td>
+                    <td>{{ reservation.teamA_user4 }}</td>
+                    <td>{{ reservation.teamA_user5 }}</td> -->
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.teamB_user1 }}, {{ reservation.teamB_user2 }}, {{ reservation.teamB_user3 }}, {{ reservation.teamB_user4 }}, {{ reservation.teamB_user5 }}</td>
+                    <!-- <td>{{ reservation.teamB_user2 }}</td>
+                    <td>{{ reservation.teamB_user3 }}</td>
+                    <td>{{ reservation.teamB_user4 }}</td>
+                    <td>{{ reservation.teamB_user5 }}</td> -->
+                    <td>
+                        <form action="/manage/cancel_reservation" method="post" onsubmit="return confirm('정말로 이 예약을 취소하시겠습니까?');">
+                            <input type="hidden" name="reserv_idx" value="{{ reservation.reserv_idx }}">
+                            <button type="submit">취소</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>예약 정보가 없습니다.</p>
+    {% endif %}
+{% else %}
+    <p>권한이 없습니다.</p>
+{% endif %}
+
+<script>
+    let isAscending = true;
+    
+    function redirectToWLResult(reserv_idx) {
+        window.location.href = '/manage/result_set/' + reserv_idx;
+    }
+
+    function filterMatches() {
+        const selectedCourt = document.getElementById('court_name').value;
+        const rows = document.querySelectorAll('#reservationTable tr');
+        
+        rows.forEach(row => {
+            if (selectedCourt === '코트 선택' || row.getAttribute('data-court-name') === selectedCourt) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function sortTableByDate() {
+        const table = document.getElementById('reservationTable');
+        const rows = Array.from(table.rows);
+        const sortedRows = rows.sort((a, b) => {
+            const dateA = new Date(a.getAttribute('data-reservation-date'));
+            const dateB = new Date(b.getAttribute('data-reservation-date'));
+
+            return isAscending ? dateA - dateB : dateB - dateA;
+        });
+
+        isAscending = !isAscending;
+
+        sortedRows.forEach(row => table.appendChild(row));
+    }
+</script>
+
+

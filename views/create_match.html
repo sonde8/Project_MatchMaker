@@ -1,0 +1,285 @@
+
+
+{% block content %}
+<!-- 네비바 -->
+<link rel="stylesheet" href="/css/create_match.css">
+<nav id="navbar">
+    <img src="/img/logo1.png" alt="" class="main_logo">
+    <div class="user_info">
+        <a href="/user/myPage">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>
+</nav>
+
+<div class="form-container">
+    <form id="createMatchForm" action="/user/create_match" method="post">
+        <div class="form-group">
+            <label for="match_title">방 제목을 설정해주세요</label>
+            <input type="text" name="match_title" id="match_title">
+        </div>
+        <div class="form-group checkbox-group">
+            <input type="checkbox" name="female_match_yn" id="female_match_yn">
+            <label for="female_match_yn">여성부 매치인가요?</label>
+        </div>
+        <div class="form-group checkbox-group">
+            <input type="checkbox" name="rate_match_yn" id="rate_match_yn">
+            <label for="rate_match_yn">점수를 건 매치인가요?</label>
+        </div>
+
+        <div class="match_region">
+            지역을 선택하세요.
+            <br>
+            <select id="main_region" name="main_region" onchange="updateSubRegion()">
+                <option value="서울특별시">서울특별시</option>
+                <option value="광주광역시">광주광역시</option>
+                <option value="전북특별자치도">전북특별자치도</option>
+            </select>
+
+            <select id="sub_region" name="sub_region">
+                <!-- 하위 지역 옵션이 여기에 동적으로 추가됩니다. -->
+            </select>
+        </div><br><br>
+
+        시합 예상 날짜 : <input type="date" name="match_date" id="match_date" class="input_date_box"><br>
+
+        시합 예상 진행 시간<br>
+        <div class="time-bar-container">
+            <div class="time-bar" id="timeBar"></div>
+        </div>
+        <input type="hidden" name="selected_times" id="selected_times">
+        <br><br><br>
+
+        시합 정보 입력 칸 <br>
+        <textarea name="match_info" cols="60" rows="4"
+            placeholder="예상 매칭 경기장 : &#10;경기 규칙 : 예) 20분 경기 5분 휴식, 거친 태클 금지, 축구화 금지 등등.."
+            id="match_info"></textarea><br>
+        <div class="submit-button-container">
+            <br><input type="hidden"><input type="submit" value="방 생성" id="submit">
+        </div>
+    </form>
+</div>
+
+
+
+<!-- 스크립트 -->
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    function updateSubRegion() {
+        const subRegionSelect = document.getElementById('sub_region');
+        const mainRegion = document.getElementById('main_region').value;
+
+        // 하위 지역 옵션 초기화
+        subRegionSelect.innerHTML = '';
+
+        let options = [];
+
+        if (mainRegion === '서울특별시') {
+            options = [
+                { value: '종로구', text: '종로구' },
+                { value: '강남구', text: '강남구' },
+                { value: '동대문구', text: '동대문구' }
+            ];
+        } else if (mainRegion === '광주광역시') {
+            options = [
+                { value: '북구', text: '북구' },
+                { value: '동구', text: '동구' },
+                { value: '남구', text: '남구' },
+                { value: '서구', text: '서구' },
+                { value: '광산구', text: '광산구' },
+            ];
+        } else if (mainRegion === '전북특별자치도') {
+            options = [
+                { value: '전주', text: '전주시' },
+                { value: '익산', text: '익산시' },
+                { value: '군산', text: '군산시' }
+            ];
+        }
+
+        // 새로운 옵션 추가
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.text;
+            subRegionSelect.appendChild(opt);
+        });
+    }
+
+    // 페이지가 로드될 때 기본 하위 지역을 설정
+    document.addEventListener('DOMContentLoaded', updateSubRegion);
+
+    document.getElementById("submit").addEventListener('keydown', function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+        };
+    }, true);
+
+    // 시합 예상 진행 시간 체크박스에 체크 할 때 적용하는 코드
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('time')) {
+            updateCheckboxes();
+        }
+    });
+
+    function updateCheckboxes() {
+        const checkboxes = document.querySelectorAll('.time');
+        let startChecked = false;
+        let endChecked = false;
+
+        checkboxes.forEach((checkbox, index) => {
+            if (checkbox.checked) {
+                if (!startChecked) {
+                    startChecked = index;
+                }
+                endChecked = index;
+            }
+        });
+
+        if (startChecked !== false && endChecked !== false) {
+            for (let i = startChecked; i <= endChecked; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+    }
+
+    // 얘도 본프로젝트에 적용해야됨!!!!!
+    function validateForm() {
+        const matchTitle = document.getElementById('match_title').value.trim();
+        const mainRegion = document.getElementById('main_region').value;
+        const subRegion = document.getElementById('sub_region').value;
+        const matchDate = document.getElementById('match_date').value;
+        const selectedTimes = document.getElementById('selected_times').value;
+        const matchInfo = document.getElementById('match_info').value.trim();
+
+        if (!matchTitle) {
+            alert('방 제목을 입력해주세요.');
+            return false;
+        }
+
+        if (!mainRegion || !subRegion) {
+            alert('시합 지역을 선택해주세요.');
+            return false;
+        }
+
+        if (!matchDate) {
+            alert('시합 예상 날짜를 선택해주세요.');
+            return false;
+        }
+
+        if (!selectedTimes) {
+            alert('시합 예상 진행 시간을 선택해주세요.');
+            return false;
+        }
+
+        if (!matchInfo) {
+            alert('시합 정보를 입력해주세요.');
+            return false;
+        }
+
+        return true;
+    }
+
+
+    // 폼 제출 이벤트에 검증 함수 연결
+    document.getElementById('createMatchForm').onsubmit = validateForm;
+</script>
+
+<!-- 예약 시간 관련 스크립트 이거 적용해야됨!!!!-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const timeBar = document.querySelector('.time-bar');
+        const selectedTimesInput = document.getElementById('selected_times');
+        let selectedTimes = [];
+        let startTime = null;
+        let endTime = null;
+
+        timeBar.addEventListener('click', function (e) {
+            const timeSlot = e.target.closest('.time-slot');
+            if (!timeSlot) return;
+
+            const time = timeSlot.dataset.time;
+
+            if (!startTime || (startTime && endTime)) {
+                // 새로운 선택 시작
+                startTime = time;
+                endTime = null;
+                clearSelection();
+            } else {
+                // 선택 종료
+                endTime = time;
+            }
+
+            updateSelection();
+        });
+
+        function clearSelection() {
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            selectedTimes = [];
+        }
+
+        function updateSelection() {
+            if (!startTime) return;
+
+            let start = timeToMinutes(startTime);
+            let end = endTime ? timeToMinutes(endTime) : start;
+
+            if (start > end) [start, end] = [end, start];
+
+            selectedTimes = [];
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                const slotTime = timeToMinutes(slot.dataset.time);
+                if (slotTime >= start && slotTime <= end) {
+                    slot.classList.add('selected');
+                    selectedTimes.push(slot.dataset.time);
+                } else {
+                    slot.classList.remove('selected');
+                }
+            });
+
+            selectedTimes.sort();
+            selectedTimesInput.value = selectedTimes.join(',');
+        }
+
+        function timeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+    });
+</script>
+
+<script>
+    const times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00",
+        "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
+        "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"];
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const timeBar = document.getElementById('timeBar');
+
+        times.forEach(time => {
+            const timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.dataset.time = time;
+
+            const timeLabel = document.createElement('span');
+            timeLabel.className = 'time-label';
+            timeLabel.textContent = time;
+
+            timeSlot.appendChild(timeLabel);
+            timeBar.appendChild(timeSlot);
+        });
+
+        // 여기에 이전에 제공한 시간 선택 관련 JavaScript 코드를 추가합니다.
+    });
+</script>
+
+{% endblock %}
